@@ -1,0 +1,635 @@
+{
+  "name": "Pokémon Battle Arena - v1.1 (portfolio template)",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3607f452-20a6-4700-9933-d19cb00f4571",
+              "name": "pokemon1",
+              "value": "={{ ($json.pokemon1 || '').trim().toLowerCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "deaefaad-bd13-4343-8658-b37b9748747a",
+              "name": "pokemon2",
+              "value": "={{ ($json.pokemon2 || '').trim().toLowerCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "972232b5-d1f8-473c-ab66-2e7f8099abb0",
+              "name": "estilo",
+              "value": "={{ $json.estilo }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -800,
+        0
+      ],
+      "id": "95822c7a-dcb8-4730-95a6-e8ad522edfcc",
+      "name": "Preparar datos"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "e92ac04c-7439-48d0-bb69-039a2dd0c714",
+              "leftValue": "={{ $json.pokemon1 }}",
+              "rightValue": "={{ $json.pokemon2 }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        -624,
+        0
+      ],
+      "id": "744e5b8d-8356-46f8-a815-6aaade871d0f",
+      "name": "¿Pokémon diferentes?"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "showText",
+        "responseText": "=\n{{ `\n<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<style>\n  * { box-sizing: border-box; }\n\n  body {\n    margin: 0;\n    padding: 60px 16px;\n    min-height: 100vh;\n    background: #101827;\n    font-family: Arial, sans-serif;\n    color: #f8fafc;\n  }\n\n  .error-card {\n    max-width: 480px;\n    margin: auto;\n    padding: 36px 26px;\n    border-radius: 20px;\n    background: #202d43;\n    border: 1px solid #40516c;\n    text-align: center;\n  }\n\n  .error-icon {\n    font-size: 52px;\n    margin-bottom: 15px;\n  }\n\n  h1 {\n    font-size: 27px;\n    margin-bottom: 16px;\n  }\n\n  p {\n    color: #cbd5e1;\n    line-height: 1.7;\n    margin-bottom: 28px;\n  }\n\n  .retry-button {\n    display: block;\n    padding: 17px;\n    border-radius: 12px;\n    background: #facc15;\n    color: #172033;\n    font-weight: bold;\n    text-decoration: none;\n  }\n\n  .retry-button:hover {\n    background: #fde68a;\n  }\n</style>\n</head>\n<body>\n  <main class=\"error-card\">\n    <div class=\"error-icon\">⚠️</div>\n    <h1>Selección inválida</h1>\n    <p>\n      Has seleccionado dos Pokémon iguales.\n      Elige dos Pokémon diferentes para\n      iniciar la batalla.\n    </p>\n\n    <a class=\"retry-button\"\n       href=\"https://TU-INSTANCIA.n8n.cloud/form/TU-ID-DE-FORMULARIO\">\n      ⚔️ VOLVER A INTENTAR\n    </a>\n  </main>\n</body>\n</html>\n` }}\n"
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        -624,
+        224
+      ],
+      "id": "674046e7-085d-4449-959b-bbf196b86688",
+      "name": "Error: Pokémon iguales"
+    },
+    {
+      "parameters": {
+        "url": "=https://pokeapi.co/api/v2/pokemon/{{ $('Preparar datos').first().json.pokemon2 }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -400,
+        128
+      ],
+      "id": "8d6799b5-5359-486f-8f40-a07357375459",
+      "name": "Consultar Pokémon 2"
+    },
+    {
+      "parameters": {
+        "url": "=https://pokeapi.co/api/v2/pokemon/{{ $('Preparar datos').first().json.pokemon1 }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -416,
+        -160
+      ],
+      "id": "2b2e2900-3a4d-42fd-b0d9-47e6ea88317e",
+      "name": "Consultar Pokémon 1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f824f40d-b81d-4736-9781-be1481363bba",
+              "name": "pokemonA",
+              "value": "={{ $json }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -272,
+        -160
+      ],
+      "id": "a931a050-dc4f-40cc-a2f8-d2cbbc3bf100",
+      "name": "Guardar Pokémon A"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f591bc42-be94-4153-80fd-f34a5dc76d2d",
+              "name": "pokemonB",
+              "value": "={{ $json }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -256,
+        128
+      ],
+      "id": "a8a1e712-a9bf-4f0b-889a-54d1b6379dd7",
+      "name": "Guardar Pokémon B"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -64,
+        -16
+      ],
+      "id": "e58e0698-05d2-4412-8dee-bd246b2ec934",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst datos = $input.first().json;\n\nconst pokemon1 = datos.pokemonA;\nconst pokemon2 = datos.pokemonB;\n\nfunction obtenerStat(pokemon, nombre) {\n  return pokemon.stats.find(\n    item => item.stat.name === nombre\n  ).base_stat;\n}\n\nfunction calcularPoder(pokemon) {\n  const ataque = obtenerStat(pokemon, 'attack');\n  const defensa = obtenerStat(pokemon, 'defense');\n  const velocidad = obtenerStat(pokemon, 'speed');\n\n  return ataque * 2 + defensa + velocidad;\n}\n\nconst poder1 = calcularPoder(pokemon1);\nconst poder2 = calcularPoder(pokemon2);\n\nlet ganador = 'empate';\n\nif (poder1 > poder2) {\n  ganador = pokemon1.name;\n} else if (poder2 > poder1) {\n  ganador = pokemon2.name;\n}\n\nreturn [{\n  json: {\n    pokemon1: pokemon1.name,\n    pokemon2: pokemon2.name,\n    poder1,\n    poder2,\n    ganador,\n    estilo: $('Preparar datos').first().json.estilo\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        112,
+        -16
+      ],
+      "id": "5ce1ee8a-777e-46ea-a425-d5c8181c1dcd",
+      "name": "Calcular batalla"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.ganador }}",
+                    "rightValue": "={{ $json.pokemon1 }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "840b1677-4eb6-45c9-8c24-bd81741948b8"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "🏆 Gana Pokémon 1"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "9907733e-a971-487c-a02b-fe54900ec217",
+                    "leftValue": "={{ $json.ganador }}",
+                    "rightValue": "={{ $json.pokemon2 }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "🏆 Gana Pokémon 2"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "025a2ec2-24f6-4be3-ae58-30e42d1cf8a5",
+                    "leftValue": "={{ $json.ganador }}",
+                    "rightValue": "empate",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "🤝 Empate"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.5,
+      "position": [
+        272,
+        -32
+      ],
+      "id": "fde15e8d-4c0a-45b7-b087-310d35793940",
+      "name": "Resultado"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "689bd71e-b980-4523-bab2-4c5ecd40284c",
+              "name": "prompt",
+              "value": "={{\n'Narra una batalla Pokémon en español. ' +\n'Pokémon 1: ' + $json.pokemon1 + ', poder: ' + $json.poder1 + '. ' +\n'Pokémon 2: ' + $json.pokemon2 + ', poder: ' + $json.poder2 + '. ' +\n'Estilo: ' + $json.estilo + '. ' +\n(\n  $json.ganador === 'empate'\n    ? 'El resultado calculado es un empate. No declares ningún ganador. Narra un desenlace equilibrado, emocionante y coherente con un empate. '\n    : 'El ganador calculado es ' + $json.ganador + '. Respeta siempre ese ganador y no lo cambies. '\n) +\n'Usa entre 100 y 150 palabras. ' +\n'Incluye ataques imaginativos y un final divertido.'\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        496,
+        -16
+      ],
+      "id": "83d4eef5-263d-428d-ad38-2b342fa7cf38",
+      "name": "Preparar prompt"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=\n{{ JSON.stringify({\n  model: 'openai/gpt-oss-120b',\n  temperature: 0.8,\n  messages: [\n    {\n      role: 'system',\n      content: 'Eres un narrador de batallas Pokémon. Respeta siempre el ganador indicado.'\n    },\n    {\n      role: 'user',\n      content: $json.prompt\n    }\n  ]\n}) }}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        640,
+        -16
+      ],
+      "id": "d536a35d-b726-49e1-84a0-736bc73a957b",
+      "name": "Groq: narrar batalla",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst respuesta = $input.first().json;\nconst batalla = $('Calcular batalla').first().json;\n\nconst datosA = $('Guardar Pokémon A').first().json.pokemonA;\nconst datosB = $('Guardar Pokémon B').first().json.pokemonB;\n\nconst narracion = respuesta.choices?.[0]?.message?.content\n  || 'La narración no está disponible.';\n\nconst escapar = (valor) => String(valor ?? '')\n  .replace(/&/g, '&amp;')\n  .replace(/</g, '&lt;')\n  .replace(/>/g, '&gt;')\n  .replace(/\"/g, '&quot;')\n  .replace(/'/g, '&#39;');\n\nconst nombreA = escapar(datosA.name.toUpperCase());\nconst nombreB = escapar(datosB.name.toUpperCase());\nconst poderA = batalla.poder1;\nconst poderB = batalla.poder2;\n\nconst imagenA = escapar(\n  datosA.sprites.other['official-artwork'].front_default\n);\n\nconst imagenB = escapar(\n  datosB.sprites.other['official-artwork'].front_default\n);\n\nconst empate = batalla.ganador === 'empate';\n\nconst titulo = empate\n  ? '¡EMPATE!'\n  : '¡VICTORIA DE ' + batalla.ganador.toUpperCase() + '!';\n\nconst tarjeta = (nombre, poder, imagen, ganador) => `\n  <article class=\"pokemon-card\">\n    <img src=\"${imagen}\" alt=\"${nombre}\">\n    <h2>${nombre}</h2>\n    <div class=\"power\">${poder}</div>\n    <small>PUNTOS DE PODER</small>\n    <span class=\"status\">\n      ${empate ? 'EMPATE' : ganador ? '🏆 GANADOR' : 'CONTENDIENTE'}\n    </span>\n  </article>\n`;\n\nconst urlNuevaBatalla = 'https://TU-INSTANCIA.n8n.cloud/form/TU-ID-DE-FORMULARIO';\nconst htmlResultado = `\n<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>Pokémon Battle Arena</title>\n<style>\n  * { box-sizing: border-box; }\n\n  body {\n    margin: 0;\n    padding: 24px 12px;\n    background: #101827;\n    color: #f8fafc;\n    font-family: Arial, sans-serif;\n  }\n\n  .container {\n    max-width: 760px;\n    margin: auto;\n  }\n\n  header {\n    text-align: center;\n    margin-bottom: 24px;\n  }\n\n  .eyebrow {\n    color: #93c5fd;\n    letter-spacing: 3px;\n    font-size: 12px;\n  }\n\n  h1 { font-size: 30px; margin: 10px 0; }\n\n  .arena {\n    display: grid;\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n    gap: 16px;\n  }\n\n  .pokemon-card {\n    text-align: center;\n    background: #202d43;\n    border: 1px solid #40516c;\n    border-radius: 18px;\n    padding: 18px 10px;\n  }\n\n  .pokemon-card img {\n    width: 100%;\n    max-width: 180px;\n    height: 175px;\n    object-fit: contain;\n  }\n\n  .pokemon-card h2 { font-size: 19px; }\n\n  .power {\n    font-size: 38px;\n    font-weight: bold;\n    color: #facc15;\n  }\n\n  small { color: #cbd5e1; }\n\n  .status {\n    display: block;\n    margin: 15px auto 0;\n    padding: 9px;\n    border-radius: 12px;\n    background: #334155;\n    font-size: 12px;\n    font-weight: bold;\n  }\n\n  .result, .story {\n    background: #202d43;\n    border-radius: 18px;\n    padding: 22px;\n    margin-top: 20px;\n  }\n\n  .result { text-align: center; }\n\n  .result h2 { color: #facc15; }\n\n  .story h2 { color: #93c5fd; }\n\n  .story p {\n    line-height: 1.8;\n    white-space: pre-wrap;\n  }\n\n  @media(max-width: 420px) {\n    h1 { font-size: 23px; }\n    .arena { gap: 8px; }\n    .pokemon-card img { height: 120px; }\n    .pokemon-card h2 { font-size: 15px; }\n  }\n\n\n  .new-battle {\n    display: block;\n    margin: 26px auto;\n    padding: 17px 24px;\n    max-width: 360px;\n    background: #facc15;\n    color: #172033;\n    border-radius: 14px;\n    text-align: center;\n    text-decoration: none;\n    font-size: 16px;\n    font-weight: bold;\n    transition: background 0.2s;\n  }\n\n  .new-battle:hover {\n    background: #fde68a;\n  }\n\n  .new-battle:focus-visible {\n    outline: 3px solid #93c5fd;\n    outline-offset: 4px;\n  }\n\n</style>\n</head>\n<body>\n<main class=\"container\">\n  <header>\n    <div class=\"eyebrow\">POKÉMON BATTLE ARENA</div>\n    <h1>⚔️ Batalla finalizada</h1>\n    <p>Simulador impulsado por IA</p>\n  </header>\n\n  <section class=\"arena\">\n    ${tarjeta(nombreA, poderA, imagenA,\n      batalla.ganador === datosA.name)}\n    ${tarjeta(nombreB, poderB, imagenB,\n      batalla.ganador === datosB.name)}\n  </section>\n\n  <section class=\"result\">\n    <h2>${escapar(titulo)}</h2>\n    <p>${poderA} vs. ${poderB}</p>\n  </section>\n\n  <section class=\"story\">\n    <h2>📖 Narración de la batalla</h2>\n    <p>${escapar(narracion)}</p>\n  </section>\n  \n  <a href=\"${escapar(urlNuevaBatalla)}\"\n     class=\"new-battle\">\n    ⚔️ NUEVA BATALLA\n  </a>\n\n</main>\n</body>\n</html>\n`;\n\nreturn [{\n  json: {\n    ...batalla,\n    narracion,\n    titulo,\n    htmlResultado\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        -16
+      ],
+      "id": "e9e03951-7435-4c8e-9d1a-5d4c3561e5dd",
+      "name": "Extraer narración"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "showText",
+        "responseText": "={{ $json.htmlResultado }}"
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        960,
+        -16
+      ],
+      "id": "4001b30e-67e2-4c7d-9c99-16ba2ba9ca9f",
+      "name": "Mostrar resultado"
+    },
+    {
+      "parameters": {
+        "formTitle": "⚔️ Pokémon Battle Arena",
+        "formDescription": "Selecciona dos Pokémon, elige el estilo de narración y descubre quién conquista la arena.",
+        "formFields": {
+          "values": [
+            {
+              "fieldType": "html",
+              "html": "\n<div class=\"battle-hero\">\n  <img\n    src=\"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png\"\n    alt=\"Pikachu\"\n    width=\"145\"\n    height=\"145\"\n  >\n  <strong>VS</strong>\n  <img\n    src=\"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png\"\n    alt=\"Charmander\"\n    width=\"145\"\n    height=\"145\"\n  >\n</div>\n"
+            },
+            {
+              "fieldLabel": "pokemon1",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "PIKACHU"
+                  },
+                  {
+                    "option": "BULBASAUR"
+                  },
+                  {
+                    "option": "SQUIRTLE"
+                  },
+                  {
+                    "option": "EEVEE"
+                  },
+                  {
+                    "option": "RATTATA"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "pokemon2",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "CHARMANDER"
+                  },
+                  {
+                    "option": "BULBASAUR"
+                  },
+                  {
+                    "option": "SQUIRTLE"
+                  },
+                  {
+                    "option": "EEVEE"
+                  },
+                  {
+                    "option": "EKANS"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "estilo",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "EPICO"
+                  },
+                  {
+                    "option": "GRACIOSO"
+                  },
+                  {
+                    "option": "DRAMATICO"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "⚔️ ¡COMENZAR BATALLA!",
+          "customCss": ":root {\n\t--font-family: 'Open Sans', sans-serif;\n\t--font-weight-normal: 400;\n\t--font-weight-bold: 600;\n\t--font-size-body: 12px;\n\t--font-size-label: 14px;\n\t--font-size-test-notice: 12px;\n\t--font-size-input: 14px;\n\t--font-size-header: 20px;\n\t--font-size-paragraph: 14px;\n\t--font-size-link: 12px;\n\t--font-size-error: 12px;\n\t--font-size-html-h1: 28px;\n\t--font-size-html-h2: 20px;\n\t--font-size-html-h3: 16px;\n\t--font-size-html-h4: 14px;\n\t--font-size-html-h5: 12px;\n\t--font-size-html-h6: 10px;\n\t--font-size-subheader: 14px;\n\n\t/* Colors */\n\t--color-background: #fbfcfe;\n\t--color-test-notice-text: #e6a23d;\n\t--color-test-notice-bg: #fefaf6;\n\t--color-test-notice-border: #f6dcb7;\n\t--color-card-bg: #ffffff;\n\t--color-card-border: #dbdfe7;\n\t--color-card-shadow: rgba(99, 77, 255, 0.06);\n\t--color-link: #7e8186;\n\t--color-header: #525356;\n\t--color-label: #555555;\n\t--color-input-border: #dbdfe7;\n\t--color-input-text: #71747A;\n\t--color-focus-border: rgb(90, 76, 194);\n\t--color-submit-btn-bg: #ff6d5a;\n\t--color-submit-btn-text: #ffffff;\n\t--color-error: #ea1f30;\n\t--color-required: #ff6d5a;\n\t--color-clear-button-bg: #7e8186;\n\t--color-html-text: #555;\n\t--color-html-link: #ff6d5a;\n\t--color-header-subtext: #7e8186;\n\n\t/* Border Radii */\n\t--border-radius-card: 8px;\n\t--border-radius-input: 6px;\n\t--border-radius-clear-btn: 50%;\n\t--card-border-radius: 8px;\n\n\t/* Spacing */\n\t--padding-container-top: 24px;\n\t--padding-card: 24px;\n\t--padding-test-notice-vertical: 12px;\n\t--padding-test-notice-horizontal: 24px;\n\t--margin-bottom-card: 16px;\n\t--padding-form-input: 12px;\n\t--card-padding: 24px;\n\t--card-margin-bottom: 16px;\n\n\t/* Dimensions */\n\t--container-width: 448px;\n\t--submit-btn-height: 48px;\n\t--checkbox-size: 18px;\n\n\t/* Others */\n\t--box-shadow-card: 0px 4px 16px 0px var(--color-card-shadow);\n\t--opacity-placeholder: 0.5;\n}\n\n\n/* POKÉMON BATTLE ARENA — INICIO */\n\nbody {\n  background: #101827 !important;\n  color: #f8fafc !important;\n  font-family: Arial, sans-serif;\n}\n\nh1 {\n  color: #ffffff !important;\n  text-align: center;\n  font-weight: 800;\n  letter-spacing: 0.3px;\n}\n\nform {\n  background: #202d43 !important;\n  border: 1px solid #40516c;\n  border-radius: 18px;\n  padding: 24px;\n}\n\nlabel {\n  color: #e2e8f0 !important;\n  font-weight: 600;\n}\n\nselect {\n  background: #334155 !important;\n  color: #ffffff !important;\n  border: 1px solid #64748b !important;\n  border-radius: 10px !important;\n  padding: 12px !important;\n}\n\nselect:focus {\n  outline: 2px solid #facc15;\n}\n\nbutton[type=\"submit\"] {\n  background: #facc15 !important;\n  color: #172033 !important;\n  border: none !important;\n  border-radius: 12px !important;\n  font-weight: 800 !important;\n  padding: 16px !important;\n  cursor: pointer;\n}\n\nbutton[type=\"submit\"]:hover {\n  background: #fde68a !important;\n}\n\n.battle-hero {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 12px;\n  margin: 10px auto 22px;\n}\n\n.battle-hero img {\n  width: 38%;\n  max-width: 145px;\n  height: auto;\n  object-fit: contain;\n}\n\n.battle-hero strong {\n  color: #facc15;\n  font-size: 28px;\n}\n\n@media (max-width: 480px) {\n  form { padding: 16px; }\n  .battle-hero strong { font-size: 21px; }\n}\n"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -960,
+        0
+      ],
+      "id": "ba17227d-4674-4f8d-9d88-e7545da93217",
+      "name": "Simulador de Batallas Pokémon"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Preparar datos": {
+      "main": [
+        [
+          {
+            "node": "¿Pokémon diferentes?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Pokémon diferentes?": {
+      "main": [
+        [
+          {
+            "node": "Consultar Pokémon 1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Consultar Pokémon 2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error: Pokémon iguales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error: Pokémon iguales": {
+      "main": [
+        []
+      ]
+    },
+    "Consultar Pokémon 1": {
+      "main": [
+        [
+          {
+            "node": "Guardar Pokémon A",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Pokémon 2": {
+      "main": [
+        [
+          {
+            "node": "Guardar Pokémon B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Pokémon A": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Pokémon B": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Calcular batalla",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular batalla": {
+      "main": [
+        [
+          {
+            "node": "Resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resultado": {
+      "main": [
+        [
+          {
+            "node": "Preparar prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar prompt": {
+      "main": [
+        [
+          {
+            "node": "Groq: narrar batalla",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq: narrar batalla": {
+      "main": [
+        [
+          {
+            "node": "Extraer narración",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer narración": {
+      "main": [
+        [
+          {
+            "node": "Mostrar resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mostrar resultado": {
+      "main": [
+        []
+      ]
+    },
+    "Simulador de Batallas Pokémon": {
+      "main": [
+        [
+          {
+            "node": "Preparar datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "nodeGroups": [],
+  "tags": []
+}
